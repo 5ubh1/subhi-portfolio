@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Muhammad Subhi — Automation Developer</title>
+<meta name="description" content="I build automation that runs in production: n8n workflows, Python tools, API integrations. 17 workflows live, self-hosted on Linux.">
+<style>
+  /* ── tokens ─────────────────────────────────────────────────────── */
+  :root {
+    --paper:   #f7f5f0;
+    --surface: #fffefb;
+    --ink:     #16202b;
+    --muted:   #5d6b7a;
+    --faint:   #647180;   /* 4.57:1 on paper — AA for small text */
+    --line:    #dfd9cd;
+    --line-soft: #ebe6dc;
+    --accent:  #b4531a;
+    --accent-down: #8e3f11;
+    --accent-wash: #f6ece0;
+    --ok:      #2f6b4f;
+
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --sans:  ui-sans-serif, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono:  ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+
+    --w: 66rem;
+    --pad: clamp(1.25rem, 4vw, 3.5rem);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .wrap { max-width: var(--w); margin-inline: auto; padding-inline: var(--pad); }
+
+  a { color: var(--accent); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+  a:hover { color: var(--accent-down); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+
+  /* ── masthead ───────────────────────────────────────────────────── */
+  .top {
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .top__in {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap;
+    padding-block: 1rem;
+  }
+  .who { font-family: var(--serif); font-size: 1.06rem; letter-spacing: .01em; }
+  .who b { font-weight: 600; }
+  .nav { display: flex; gap: .55rem; font-size: .9rem; flex-wrap: wrap; }
+  /* negative margin keeps the visual rhythm while giving a 44px touch target */
+  .nav a {
+    color: var(--muted); text-decoration: none;
+    display: inline-flex; align-items: center; min-height: 44px;
+    padding-inline: .6rem; margin-inline: -.6rem;
+  }
+  .nav a:hover { color: var(--accent); text-decoration: underline; }
+
+  /* ── intro ──────────────────────────────────────────────────────── */
+  .intro { padding-block: clamp(3rem, 8vw, 5.5rem) clamp(2rem, 5vw, 3rem); }
+  .kicker {
+    font-family: var(--mono); font-size: .74rem; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--accent); margin: 0 0 1.2rem;
+  }
+  h1 {
+    font-family: var(--serif); font-weight: 600;
+    font-size: clamp(1.95rem, 5.2vw, 3.4rem);
+    line-height: 1.14; letter-spacing: -.015em;
+    margin: 0 0 1.5rem; max-width: 30ch;
+  }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede {
+    font-size: clamp(1.02rem, 1.6vw, 1.16rem); color: var(--muted);
+    max-width: 60ch; margin: 0 0 2rem;
+  }
+  .facts {
+    display: flex; gap: 0; flex-wrap: wrap;
+    border-top: 1px solid var(--line); padding-top: 1.25rem;
+  }
+  .fact { padding-right: 2.25rem; margin-right: 2.25rem; border-right: 1px solid var(--line-soft); }
+  .fact:last-child { border-right: 0; margin-right: 0; padding-right: 0; }
+  .fact dt {
+    font-family: var(--mono); font-size: .7rem; letter-spacing: .1em;
+    text-transform: uppercase; color: var(--faint); margin-bottom: .3rem;
+  }
+  .fact dd { margin: 0; font-size: .95rem; font-variant-numeric: tabular-nums; }
+  .fact dd b { font-family: var(--serif); font-size: 1.3rem; font-weight: 600; }
+
+  /* ── sections ───────────────────────────────────────────────────── */
+  section { padding-block: clamp(2.5rem, 6vw, 4rem); border-top: 1px solid var(--line); }
+  h2 {
+    font-family: var(--serif); font-weight: 600;
+    font-size: clamp(1.4rem, 2.6vw, 1.85rem);
+    letter-spacing: -.01em; margin: 0 0 .6rem;
+  }
+  .sub { color: var(--muted); margin: 0 0 2.25rem; max-width: 58ch; }
+
+  /* work list — numbered because the order is the argument */
+  .work { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+  .work > li {
+    display: grid; grid-template-columns: 3.25rem 1fr; gap: 0 1.25rem;
+    padding-block: 1.65rem; border-top: 1px solid var(--line-soft);
+  }
+  .work > li:first-child { border-top: 0; padding-top: 0; }
+  .work .n {
+    font-family: var(--mono); font-size: .82rem; color: var(--faint);
+    padding-top: .35rem; font-variant-numeric: tabular-nums;
+  }
+  .work h3 {
+    font-family: var(--serif); font-size: 1.16rem; font-weight: 600;
+    margin: 0 0 .45rem; letter-spacing: -.005em;
+  }
+  .work p { margin: 0 0 .7rem; color: var(--muted); max-width: 62ch; }
+  .work p:last-child { margin-bottom: 0; }
+  .work .detail {
+    font-family: var(--mono); font-size: .8rem; color: var(--faint);
+    display: flex; flex-wrap: wrap; gap: .4rem 1.1rem;
+  }
+
+  /* repos */
+  .repos { display: grid; gap: 1px; background: var(--line-soft); border: 1px solid var(--line-soft); border-radius: 3px; }
+  .repo {
+    background: var(--surface); padding: 1.5rem 1.6rem; display: block;
+    text-decoration: none; color: inherit;
+    transition: background .14s ease;
+  }
+  .repo:hover { background: var(--accent-wash); }
+  .repo:hover .repo__name { color: var(--accent); }
+  .repo__name {
+    font-family: var(--mono); font-size: .95rem; font-weight: 600;
+    margin: 0 0 .5rem; color: var(--ink); transition: color .14s ease;
+  }
+  .repo__desc { margin: 0 0 .8rem; color: var(--muted); font-size: .94rem; max-width: 66ch; }
+  .repo__meta {
+    font-family: var(--mono); font-size: .74rem; color: var(--faint);
+    letter-spacing: .04em; display: flex; gap: .9rem; flex-wrap: wrap;
+  }
+
+  /* tell — the two real incidents */
+  .tell { display: grid; gap: 2.5rem; }
+  @media (min-width: 54rem) { .tell { grid-template-columns: 1fr 1fr; gap: 3rem; } }
+  .tell__item { border-top: 2px solid var(--ink); padding-top: 1.1rem; }
+  .tell__item h3 {
+    font-family: var(--serif); font-size: 1.1rem; font-weight: 600;
+    margin: 0 0 .7rem;
+  }
+  .tell__item p { margin: 0 0 .8rem; color: var(--muted); font-size: .95rem; }
+  .tell__item p:last-child { margin-bottom: 0; }
+  .tell__item strong { color: var(--ink); font-weight: 600; }
+  .num {
+    font-family: var(--mono); font-size: .82rem; color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* stack */
+  .stack { display: flex; flex-wrap: wrap; gap: .5rem; margin: 0; padding: 0; list-style: none; }
+  .stack li {
+    font-family: var(--mono); font-size: .78rem; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 2px;
+    padding: .3rem .6rem; background: var(--surface);
+  }
+
+  /* contact */
+  .contact { padding-block: clamp(2.5rem, 6vw, 4rem) clamp(3rem, 7vw, 5rem); border-top: 1px solid var(--line); }
+  .contact h2 { margin-bottom: .7rem; }
+  .links { display: flex; flex-wrap: wrap; gap: .6rem 1.6rem; margin-top: 1.5rem; font-size: .95rem; }
+  .links a { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; }
+  .links .lbl { font-family: var(--mono); font-size: .72rem; color: var(--faint); letter-spacing: .1em; text-transform: uppercase; }
+
+  footer {
+    border-top: 1px solid var(--line); padding-block: 1.5rem 2.5rem;
+    font-size: .82rem; color: var(--faint);
+    display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap;
+  }
+
+  @media (max-width: 40rem) {
+    body { font-size: 16px; }
+    .work > li { grid-template-columns: 2.25rem 1fr; gap: 0 .75rem; }
+    .fact { padding-right: 1.5rem; margin-right: 1.5rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top__in">
+    <div class="who"><b>Muhammad Subhi</b> — Automation Developer</div>
+    <nav class="nav">
+      <a href="#work">Work</a>
+      <a href="#code">Code</a>
+      <a href="#failures">Failures</a>
+      <a href="#stack">Stack</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <div class="wrap intro">
+    <p class="kicker">Wonosobo, Indonesia · Remote</p>
+    <h1>Reports that used to take hours now build themselves — and <em>tell me when they break</em>.</h1>
+    <p class="lede">
+      I build automation that runs in production, not demos. Nearly all of it is
+      n8n workflows and Python tools that keep a school and several small
+      businesses running without anyone touching them.
+    </p>
+    <dl class="facts">
+      <div class="fact"><dt>Live workflows</dt><dd><b>17</b></dd></div>
+      <div class="fact"><dt>Self-hosted on</dt><dd>Ubuntu · Docker · nginx</dd></div>
+      <div class="fact"><dt>Languages</dt><dd>Python · Node.js · Bash</dd></div>
+      <div class="fact"><dt>Since</dt><dd>2024</dd></div>
+    </dl>
+  </div>
+
+  <section id="work">
+    <div class="wrap">
+      <h2>What runs today</h2>
+      <p class="sub">Four systems in production. Each one replaced a manual routine that someone had been doing by hand.</p>
+
+      <ol class="work">
+        <li>
+          <span class="n">01</span>
+          <div>
+            <h3>Attendance reporting for a school</h3>
+            <p>
+              Teachers submit attendance through a web form. The workflow collects
+              the submissions, recaps them per session, and delivers the recap to
+              Telegram — including the teachers who have not submitted yet, so the
+              gap is visible before it becomes a problem.
+            </p>
+            <div class="detail"><span>n8n</span><span>Google Sheets</span><span>Telegram Bot API</span></div>
+          </div>
+        </li>
+        <li>
+          <span class="n">02</span>
+          <div>
+            <h3>A content pipeline</h3>
+            <p>
+              Three stages end to end: research and topic selection, article
+              drafting against a written standard, then sourcing an image and
+              publishing. Quality gates sit between each stage, so a draft that
+              fails the standard never reaches the site.
+            </p>
+            <div class="detail"><span>Node.js</span><span>REST APIs</span><span>WordPress REST</span><span>Google Sheets</span></div>
+          </div>
+        </li>
+        <li>
+          <span class="n">03</span>
+          <div>
+            <h3>Monthly finance reporting</h3>
+            <p>
+              Reads payments and outstanding balances from a spreadsheet, builds
+              the monthly report, and sends it. This one touches real money owed by
+              real families, so it was built with a written change trail and a
+              backup before the first change — not after.
+            </p>
+            <div class="detail"><span>n8n</span><span>Python</span><span>PDF generation</span></div>
+          </div>
+        </li>
+        <li>
+          <span class="n">04</span>
+          <div>
+            <h3>Monitoring that reads two sources</h3>
+            <p>
+              A job that checks both the workflow database and the container logs,
+              because a workflow can report <code>success</code> while its own
+              output says the job failed. Reading one source alone lies.
+            </p>
+            <div class="detail"><span>Python</span><span>SQLite</span><span>Docker logs</span><span>cron</span></div>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section id="code">
+    <div class="wrap">
+      <h2>Code you can read</h2>
+      <p class="sub">Small, dependency-light, and written to be used by someone who is not me.</p>
+      <div class="repos">
+        <a class="repo" href="https://github.com/5ubh1/sheetreader">
+          <p class="repo__name">sheetreader</p>
+          <p class="repo__desc">
+            Read Google Sheets into typed Python rows. Retries transient errors with
+            backoff, refuses to retry real answers like 403, and refreshes an expired
+            token on 401 — all the parts I kept rewriting by hand. Standard library
+            only.
+          </p>
+          <p class="repo__meta"><span>Python</span><span>MIT</span><span>tests in CI</span></p>
+        </a>
+        <a class="repo" href="https://github.com/5ubh1/demo-laporan">
+          <p class="repo__name">demo-laporan</p>
+          <p class="repo__desc">
+            The monthly business report shown end to end: summary cards, a per-product
+            table, and automatic notes about anything unusual. The included PDF is
+            generated by the script, not drawn by hand.
+          </p>
+          <p class="repo__meta"><span>Python</span><span>reportlab</span><span>sample output</span></p>
+        </a>
+        <a class="repo" href="https://github.com/5ubh1">
+          <p class="repo__name">github.com/5ubh1</p>
+          <p class="repo__desc">Everything else, including the work in progress I have not finished yet.</p>
+          <p class="repo__meta"><span>all repositories</span></p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="failures">
+    <div class="wrap">
+      <h2>Where the real work is</h2>
+      <p class="sub">
+        Automation does not fail in the happy path. It fails quietly, weeks later,
+        in a way nobody notices — a report that simply stops updating. Two of mine,
+        and what they cost.
+      </p>
+
+      <div class="tell">
+        <div class="tell__item">
+          <h3>The copy that was twelve runs behind</h3>
+          <p>
+            I needed to see why a workflow had failed, so I copied the database file
+            and opened the copy. It showed <span class="num">729</span> runs.
+          </p>
+          <p>
+            The live database had <span class="num">741</span>. The twelve missing were
+            the most recent — exactly the ones I was looking for. SQLite keeps recent
+            writes in a separate write-ahead log, and I had copied only the main file.
+          </p>
+          <p><strong>Twelve is not a rounding error. It is missing data.</strong> Now I open the database read-only, in place.</p>
+        </div>
+
+        <div class="tell__item">
+          <h3>Two CDNs, opposite rules</h3>
+          <p>
+            Every article lost its images. The cause was one word: our download
+            User-Agent contained <span class="num">bot</span>, and one CDN answered
+            <span class="num">403</span> to anything that looked automated.
+          </p>
+          <p>
+            The obvious fix — send a browser User-Agent — broke the other CDN. That one
+            <em>requires</em> an honest bot User-Agent with contact details, and answers
+            <span class="num">429</span> to a generic browser string instead.
+          </p>
+          <p><strong>One header cannot satisfy both.</strong> The client now picks the User-Agent per host, with a fallback.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="stack">
+    <div class="wrap">
+      <h2>Stack</h2>
+      <p class="sub">Chosen because it runs unattended on a small server, not because it is fashionable.</p>
+      <ul class="stack">
+        <li>Python</li><li>Node.js</li><li>n8n</li><li>Docker</li><li>nginx</li>
+        <li>Linux</li><li>SQLite</li><li>PostgreSQL</li><li>Bash</li>
+        <li>Google Sheets API</li><li>REST APIs</li><li>Telegram Bot API</li>
+        <li>WordPress</li><li>Git</li><li>cron</li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="wrap contact" id="contact">
+    <h2>Something takes hours every month?</h2>
+    <p class="sub" style="margin-bottom:0">
+      Describe the routine. I will tell you honestly whether it is worth
+      automating — sometimes it is not, and I will say so.
+    </p>
+    <div class="links">
+      <span class="lbl">Find me</span>
+      <a href="https://github.com/5ubh1">GitHub</a>
+      <a href="mailto:gadgetspedias@gmail.com">gadgetspedias@gmail.com</a>
+    </div>
+  </div>
+
+</main>
+
+<footer class="wrap">
+  <span>Muhammad Subhi · Automation Developer · Indonesia</span>
+  <span>Built as a single static page.</span>
+</footer>
+
+</body>
+</html>
