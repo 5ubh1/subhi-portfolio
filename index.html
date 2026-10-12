@@ -149,6 +149,38 @@
     letter-spacing: .04em; display: flex; gap: .9rem; flex-wrap: wrap;
   }
 
+  /* live repo list — filled from the GitHub API at page load */
+  .live {
+    margin-top: 1.75rem; border-top: 1px solid var(--line-soft); padding-top: 1.4rem;
+  }
+  .live__head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap; margin-bottom: 1rem;
+  }
+  .live__label {
+    font-family: var(--mono); font-size: .72rem; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--faint); margin: 0;
+  }
+  .live__state { font-family: var(--mono); font-size: .74rem; color: var(--faint); margin: 0; }
+  .live__list { list-style: none; margin: 0; padding: 0; display: grid; gap: .1rem; }
+  .live__list li { display: flex; }
+  .live__list a {
+    display: flex; align-items: baseline; gap: .85rem; flex-wrap: wrap;
+    width: 100%; min-height: 44px; padding: .55rem .1rem;
+    border-bottom: 1px solid var(--line-soft);
+    text-decoration: none; color: inherit;
+  }
+  .live__list li:last-child a { border-bottom: 0; }
+  .live__list a:hover { background: var(--accent-wash); }
+  .live__list a:hover .live__name { color: var(--accent); }
+  .live__name {
+    font-family: var(--mono); font-size: .88rem; font-weight: 600;
+    color: var(--ink); transition: color .14s ease;
+  }
+  .live__desc { color: var(--muted); font-size: .88rem; flex: 1 1 18rem; }
+  .live__when { font-family: var(--mono); font-size: .72rem; color: var(--faint); margin-left: auto; white-space: nowrap; }
+  .live__more { margin: 1rem 0 0; font-size: .88rem; }
+
   /* tell — the two real incidents */
   .tell { display: grid; gap: 2.5rem; }
   @media (min-width: 54rem) { .tell { grid-template-columns: 1fr 1fr; gap: 3rem; } }
@@ -321,6 +353,14 @@
           <p class="repo__meta"><span>all repositories</span></p>
         </a>
       </div>
+
+      <div class="live" id="live">
+        <div class="live__head">
+          <p class="live__label">Also public</p>
+          <p class="live__state" id="live-state">loading…</p>
+        </div>
+        <ul class="live__list" id="live-list"></ul>
+      </div>
     </div>
   </section>
 
@@ -398,6 +438,80 @@
   <span>Muhammad Subhi · Automation Developer · Indonesia</span>
   <span>Built as a single static page.</span>
 </footer>
+
+<script>
+/* The three repos above are hand-picked: they are the argument.
+   This list is everything else, read live from the public GitHub API,
+   so a new repository appears here on its own. If the API is
+   unreachable the section simply stays quiet — it never breaks the page. */
+(function () {
+  var USER = '5ubh1';
+  var FEATURED = ['sheetreader', 'demo-laporan', 'subhi-portfolio', '5ubh1'];
+  var list = document.getElementById('live-list');
+  var state = document.getElementById('live-state');
+  if (!list || !state) return;
+
+  function monthsAgo(iso) {
+    var days = Math.floor((Date.now() - new Date(iso).getTime()) / 86400000);
+    if (days < 1) return 'today';
+    if (days < 30) return days + 'd ago';
+    var m = Math.floor(days / 30.44);
+    if (m < 12) return m + 'mo ago';
+    return Math.floor(m / 12) + 'y ago';
+  }
+
+  fetch('https://api.github.com/users/' + USER + '/repos?per_page=100&sort=updated', {
+    headers: { 'Accept': 'application/vnd.github+json' }
+  })
+    .then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    })
+    .then(function (repos) {
+      if (!Array.isArray(repos)) throw new Error('unexpected payload');
+      var rest = repos
+        .filter(function (r) { return !r.fork && !r.archived; })
+        .filter(function (r) { return FEATURED.indexOf(r.name) === -1; })
+        .sort(function (a, b) { return new Date(b.pushed_at) - new Date(a.pushed_at); });
+
+      if (!rest.length) {
+        state.textContent = 'nothing else yet';
+        return;
+      }
+
+      state.textContent = rest.length + (rest.length === 1 ? ' repository' : ' repositories');
+      rest.forEach(function (r) {
+        var li = document.createElement('li');
+        var a = document.createElement('a');
+        a.href = r.html_url;
+
+        var name = document.createElement('span');
+        name.className = 'live__name';
+        name.textContent = r.name;
+        a.appendChild(name);
+
+        if (r.description) {
+          var d = document.createElement('span');
+          d.className = 'live__desc';
+          d.textContent = r.description;
+          a.appendChild(d);
+        }
+
+        var w = document.createElement('span');
+        w.className = 'live__when';
+        w.textContent = r.language ? r.language + ' · ' + monthsAgo(r.pushed_at) : monthsAgo(r.pushed_at);
+        a.appendChild(w);
+
+        li.appendChild(a);
+        list.appendChild(li);
+      });
+    })
+    .catch(function () {
+      /* silent by design: a failed fetch should not look like a broken page */
+      state.textContent = 'see github.com/' + USER;
+    });
+})();
+</script>
 
 </body>
 </html>
